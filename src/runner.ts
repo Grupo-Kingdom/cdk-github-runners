@@ -31,6 +31,7 @@ import { StatusFunction } from './status-function';
 import { TokenRetrieverFunction } from './token-retriever-function';
 import { singletonLogGroup, SingletonLogType } from './utils';
 import { GithubWebhookHandler } from './webhook';
+import { NotificationRuleTagFixer } from './aspects/notification-rule-tags';
 
 
 /**
@@ -773,6 +774,8 @@ export class GitHubRunners extends Construct implements ec2.IConnectable {
         AwsImageBuilderFailedBuildNotifier.createFilteringTopic(this, topic),
       ),
     );
+    // Ensure notification rules use the correct tag format
+    cdk.Aspects.of(stack).add(new NotificationRuleTagFixer());
     return topic;
   }
 
